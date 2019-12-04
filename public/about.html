@@ -1,7 +1,13 @@
 <html>
     <head>
         <style>
-        
+        .fk {
+            background-color:#ff6632;
+        }
+        .traditional {
+            background-color:#00f0f0;
+        }
+
         tr:nth-child(even) {background-color: #f2f2f2;}  
         </style>
 
@@ -23,6 +29,16 @@
 <tr><td>\d table_name</td><td>describe</td></tr>
 <tr><td>\list</td><td>List databases</td></tr>
 <tr><td colspan='2'>https://www.endpoint.com/blog/2013/06/03/postgresql-as-nosql-with-data-validation</td></tr>
+
+<tr class="traditional">
+    <td>
+INSERT INTO users (name, email) VALUES ('Andy', 'chicken@bird.com')
+    </td>
+<td>
+Traditional insert
+</td>
+</tr>
+
 <tr>
 <td>
 <textarea rows=3 cols=70>
@@ -135,7 +151,80 @@ INSERT 0 1
   
 
 
-  
+<tr  class='fk'>
+        <td >
+        <textarea rows=8 cols=120>
+CREATE TABLE so_headers (
+id SERIAL PRIMARY KEY,
+customer_id INTEGER,
+ship_to VARCHAR (255)
+);
+        </textarea>
+        </td>
+        <td>
+STEP1: Create  a table
+        </td>
+        </tr>
+        
+          
+<tr class='fk'>
+                <td>
+                <textarea rows=8 cols=120>
+CREATE TABLE so_items (
+item_id int4 NOT NULL,   
+so_id int4 REFERENCES so_headers(id) ON DELETE CASCADE,
+product_id int4,
+qty int4,
+net_price numeric,
+PRIMARY KEY (item_id,so_id)
+);
+                </textarea>
+                </td>
+                <td>
+STEP 2: Create  a table w/ a FK 
+                </td>
+                </tr>
+                
+                  
+
+
+               
+          
+<tr class='fk'>
+        <td>
+        <textarea rows=8 cols=120>
+                INSERT INTO so_headers (customer_id, ship_to) VALUES ('7783', 'PDX')
+        </textarea>
+        </td>
+        <td>
+FK insert 1
+        </td>
+</tr>
+
+
+<tr class='fk'>
+        <td>
+        <textarea rows=8 cols=120>
+
+         INSERT INTO so_items ( item_id, so_id, product_id, qty, net_price ) VALUES (1, 7783,  2, 2, 10)
+
+        </textarea>
+        </td>
+        <td>
+FK insert 2
+        </td>
+        </tr>
+        
+
+        
+          
+
+
+         
+                
+        
+
+
 
 </table>
 

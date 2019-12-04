@@ -1,4 +1,5 @@
 const stack = require('callsite');
+const cc = require('cli-color')
 const skip = {
 	"handle":"",
 	"next":"",
@@ -21,7 +22,7 @@ class Caller {
 		const relativeFile = ary[ary.length - 1] 
 
 		const line = site[1].getLineNumber() 
-		console.log( " Line: " + line + " from '" + relativeFile + "' ( func " + func + ")")
+		console.log( "  line: " + cc.bgYellowBright(line) + " from '" + cc.bgYellowBright(relativeFile) + "' ( func " + cc.bgYellowBright(func) + ")")
 	}
 
 	showStack() {
@@ -39,7 +40,8 @@ class Caller {
 				if ( skip.hasOwnProperty( func )) {
 					// do nothing
 				} else {
-					console.log( i + " Line: " + line + " from '" + relativeFile + "' ( func " + func + ")")
+					console.log( cc.bold(i) + "  line: " + cc.bgYellowBright(line) + " from '" + cc.bgYellowBright(relativeFile) + "' ( func " + cc.bgYellowBright(func) + ")")
+
 				}
 			}
 		});

@@ -42,12 +42,18 @@ const getJsonObjectsById = (request, response) => {
   caller.showStack()
   const id = parseInt(request.params.id)
   let sql = "SELECT * FROM validatedTable WHERE (data #>> '{id}')::numeric = $1"
+  const d1 = new Date().getTime() 
+
   pool.query(sql, [id], (error, results) => {
+
     if (error) {
       console.log("Error " + error )
       response.status(500).send(`getUserById fail ${error}`)
+    } else {
+      const d2 = new Date().getTime() 
+      console.log("MS elapsed " + ( d2 - d1 ))
+      response.status(200).json(results.rows)
     }
-    response.status(200).json(results.rows)
   })
 }
 
@@ -73,11 +79,14 @@ const getUsers = (request, response) => {
 const getUserById = (request, response) => {
   caller.showStack()
   const id = parseInt(request.params.id)
+  const d1 = new Date().getTime() 
   pool.query('SELECT * FROM users WHERE id = $1', [id], (error, results) => {
     if (error) {
       console.log("Error " + error )
       response.status(500).send(`getUserById fail ${error}`)
     } else {
+      const d2 = new Date().getTime() 
+      console.log("MS elapsed " + (d2 - d1))
       response.status(200).json(results.rows)
     }
   })

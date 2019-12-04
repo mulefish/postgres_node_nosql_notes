@@ -3,7 +3,9 @@ const bodyParser = require('body-parser')
 const app = express()
 const db = require('./queries')
 const port = 3000
+
 app.use(express.static('public')) // Try about.html
+
 app.use(bodyParser.json())
 app.use(
   bodyParser.urlencoded({
@@ -15,18 +17,18 @@ app.use(
 app.get('/', (request, response) => {
   response.json({ info: 'Node.js, Express, and Postgres API and NoSQL w/ Postgres' })
 })
+// /////////////////////// TRADITIONAL //////////////////////////////////////////
 
-// Traditional SQL 
 app.get('/users', db.getUsers)
 app.get('/users/:id', db.getUserById)
 app.post('/users', db.createUser)
 app.put('/users/:id', db.updateUser)
 app.delete('/users/:id', db.deleteUser)
 
-// JSON NO-SQL
+// /////////////////////// NO-SQL //////////////////////////////////////////
 app.post('/jsonObj', db.insertJsonObject)
-//app.get('/jsonObj', db.insertJsonObject)
-
+app.get('/jsonObj', db.getJsonObjects)
+app.get('/jsonObj/:id', db.getJsonObjectsById)
 
 app.listen(port, () => {
   console.log(`App running on port ${port}.`)

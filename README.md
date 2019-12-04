@@ -6,4 +6,4 @@ node index.js
 ( to start the server )
 
 # Running step2: 
-Use the Postman scripts
+Use the Postman scripts ( PostGres.postman_collection.json ) 

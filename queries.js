@@ -9,6 +9,7 @@ const pool = new Pool({
   port: 5432,
 })
 
+// /////////////////////// NO-SQL //////////////////////////////////////////
 const insertJsonObject = (request, response) => {
     caller.showStack()
     pool.query('INSERT INTO validatedTable (data) VALUES($1)', [request.body], (error, results) => {
@@ -21,16 +22,51 @@ const insertJsonObject = (request, response) => {
   })
 }
 
+const getJsonObjects = (request, response) => {
+  caller.showStack()
 
+  pool.query('SELECT * FROM validatedTable', (error, results) => {
+    if (error) {
+      console.log("Error " + error )
+      response.status(500).send(`getJsonObjects fail! `)
+
+    } else {
+      console.log("It is OK ")
+      response.status(200).json( results.rows)
+    }
+  })
+}
+
+
+const getJsonObjectsById = (request, response) => {
+  caller.showStack()
+  const id = parseInt(request.params.id)
+  let sql = "SELECT * FROM validatedTable WHERE (data #>> '{id}')::numeric = $1"
+  pool.query(sql, [id], (error, results) => {
+    if (error) {
+      console.log("Error " + error )
+      response.status(500).send(`getUserById fail ${error}`)
+    }
+    response.status(200).json(results.rows)
+  })
+}
+
+
+
+// ////////////////////// END NO-SQL ///////////////////////////////////////////
+
+// /////////////////////// TRADITIONAL //////////////////////////////////////////
 
 
 const getUsers = (request, response) => {
   caller.showStack()
   pool.query('SELECT * FROM users ORDER BY id ASC', (error, results) => {
     if (error) {
-      throw error
+      console.log("Error " + error )
+      response.status(500).send(`getUsers fail ${error}`)
+    } else {
+      response.status(200).json(results.rows)
     }
-    response.status(200).json(results.rows)
   })
 }
 
@@ -39,9 +75,11 @@ const getUserById = (request, response) => {
   const id = parseInt(request.params.id)
   pool.query('SELECT * FROM users WHERE id = $1', [id], (error, results) => {
     if (error) {
-      throw error
+      console.log("Error " + error )
+      response.status(500).send(`getUserById fail ${error}`)
+    } else {
+      response.status(200).json(results.rows)
     }
-    response.status(200).json(results.rows)
   })
 }
 
@@ -53,9 +91,11 @@ const createUser = (request, response) => {
     
     if (error) {
       console.log("Error " + error )
-      throw error
+      response.status(500).send(`createUser fail ${error}`)
     }
-    response.status(201).send(`User added with ID...`)
+    else {
+      response.status(200).json("User added")
+    }
   })
 }
 
@@ -69,9 +109,11 @@ const updateUser = (request, response) => {
     [name, email, id],
     (error, results) => {
       if (error) {
-        throw error
-      }
-      response.status(200).send(`User modified with ID: ${id}`)
+        console.log("Error " + error )
+        response.status(500).send(`updateUser fail ${error}`)
+      } else { 
+        response.status(200).send(`User modified with ID: ${id}`)
+      } 
     }
   )
 }
@@ -81,11 +123,16 @@ const deleteUser = (request, response) => {
   const id = parseInt(request.params.id)
   pool.query('DELETE FROM users WHERE id = $1', [id], (error, results) => {
     if (error) {
-      throw error
-    }
+      console.log("Error " + error )
+      response.status(500).send(`deleteUser fail ${error}`)
+    } else {
     response.status(200).send(`User deleted with ID: ${id}`)
+    }
   })
 }
+
+// /////////////////////// END TRADITIONAL //////////////////////////////////////////
+
 
 module.exports = {
   getUsers,
@@ -93,5 +140,7 @@ module.exports = {
   createUser,
   updateUser,
   deleteUser,
-  insertJsonObject
+  insertJsonObject,
+  getJsonObjects,
+  getJsonObjectsById
 }

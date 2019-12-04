@@ -1,0 +1,139 @@
+<html>
+<body>
+
+
+<table border='1'>
+<tr><td>psql -d postgres -U me </td><td>Get to postgres CLI</td></tr>
+<tr><td>CREATE ROLE me WITH LOGIN PASSWORD 'password';</td><td>Create user named 'me' with password 'password'</td></tr>
+<tr><td>ALTER ROLE me CREATEDB;</td><td>Make 'me' able to able to create a database</td></tr>
+<tr><td>CREATE DATABASE api;</td><td>Create database named 'api'</td></tr>
+<tr><td>\c api</td><td>Use database 'api'</td></tr>
+<tr><td>\q</td><td>Exit psql connection</td></tr>
+<tr><td>\c</td><td>Connect to a new database</td></tr>
+<tr><td>\dt</td><td>List all tables</td></tr>
+<tr><td>\du</td><td>List all roles</td></tr>
+<tr><td>\d table_name</td><td>describe</td></tr>
+<tr><td>\list</td><td>List databases</td></tr>
+<tr><td colspan='2'>https://www.endpoint.com/blog/2013/06/03/postgresql-as-nosql-with-data-validation</td></tr>
+<tr>
+<td>
+<textarea rows=3 cols=70>
+CREATE TABLE foo (
+data JSON
+);
+</textarea>
+</td>
+<td>
+Create table foo of type JSON which has zero validation
+</td>
+</tr>
+<!-- ............ -->
+<tr>
+<td>
+<textarea rows=8 cols=70>
+INSERT INTO foo(data) VALUES('{
+"id": 1,
+"name": "shoes",
+"description": "blue_shoes",
+"price": 12.34,
+"currency": "dollars",
+"in_stock": 5
+}');
+</textarea>
+</td>
+<td>
+Well formed insert into table foo
+</td>
+</tr>
+<!-- ............ -->
+<tr>
+<td>
+<textarea rows=8 cols=70>
+INSERT INTO foo(data) VALUES('{
+"id": 1,
+"name": "shoes",
+"description": "blue_shoes",
+"price": 12.34,
+"currency": "dollars",
+"in_stock": 5,
+}');
+</textarea>
+</td>
+<td>
+Ill formed insert into table foo <br>( notice the trailing ,): This would cause an error
+</td>
+</tr>
+<!-- ............ -->
+<tr>
+<td>
+<textarea rows=8 cols=120>
+CREATE TABLE validatedTable (
+data JSON,
+CONSTRAINT validate_id CHECK ((data->>'id')::integer >= 1 AND (data->>'id') IS NOT NULL ),
+CONSTRAINT validate_name CHECK (length(data->>'name') > 0 AND (data->>'name') IS NOT NULL ),
+CONSTRAINT validate_description CHECK (length(data->>'description') > 0  AND (data->>'description') IS NOT NULL ),
+CONSTRAINT validate_price CHECK ((data->>'price')::decimal >= 0.0 AND (data->>'price') IS NOT NULL),
+CONSTRAINT validate_currency CHECK (data->>'currency' = 'dollars' AND (data->>'currency') IS NOT NULL),
+CONSTRAINT validate_in_stock CHECK ((data->>'in_stock')::integer >= 0 AND (data->>'in_stock') IS NOT NULL )
+);
+</textarea>
+</td>
+<td>
+The table 'validatedTable' will have validation
+</td>
+</tr>
+<!-- ............ -->
+<tr>
+<td>
+<textarea rows=8 cols=120>
+INSERT INTO validatedTable(data) VALUES('{
+"id": 1,
+"name": "d",   
+"price": 1.0,  
+"currency": "dollars",   
+"in_stock": 5
+}');
+</textarea>
+</td>
+<td>
+Intentionally failing insert yeilds:<br>
+ERROR:  new row for relation "validatedtable" violates check constraint "validate_description"
+DETAIL:  Failing row contains ({
+"id": 1,
+"name": "d",   
+"...).
+</td>
+</tr>
+<!-- ............ -->
+<tr>
+<td>
+<textarea rows=8 cols=120>
+INSERT INTO validatedTable(data) VALUES('{
+"id": 1,
+"name": "d",   
+"price": 1.0,  
+"currency": "dollars",   
+"in_stock": 6,
+"description":"description"   
+}');
+</textarea>
+</td>
+<td>
+Successful insert yeilds:<br>
+INSERT 0 1
+</td>
+</tr>
+
+  
+
+
+  
+
+</table>
+
+
+
+
+
+</body>
+</html>

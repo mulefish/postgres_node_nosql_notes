@@ -29,6 +29,10 @@
 <tr><td>\d table_name</td><td>describe</td></tr>
 <tr><td>\list</td><td>List databases</td></tr>
 <tr><td colspan='2'>https://www.endpoint.com/blog/2013/06/03/postgresql-as-nosql-with-data-validation</td></tr>
+<tr><td colspan='2'>https://blog.logrocket.com/setting-up-a-restful-api-with-node-js-and-postgresql-d96d6fc892d8/</td></tr>
+
+
+
 
 <tr class="traditional">
     <td>
@@ -193,7 +197,7 @@ STEP 2: Create  a table w/ a FK
 <tr class='fk'>
         <td>
         <textarea rows=8 cols=120>
-                INSERT INTO so_headers (customer_id, ship_to) VALUES ('7783', 'PDX')
+INSERT INTO so_headers (customer_id, ship_to) VALUES ('7783', 'PDX')
         </textarea>
         </td>
         <td>
@@ -205,9 +209,8 @@ FK insert 1
 <tr class='fk'>
         <td>
         <textarea rows=8 cols=120>
-
-         INSERT INTO so_items ( item_id, so_id, product_id, qty, net_price ) VALUES (1, 7783,  2, 2, 10)
-
+INSERT INTO so_items ( item_id, so_id, product_id, qty, net_price ) VALUES (1, 1,  2, 2, 10);
+INSERT INTO so_items ( item_id, so_id, product_id, qty, net_price ) VALUES (2, 1,  2, 2, 10);
         </textarea>
         </td>
         <td>

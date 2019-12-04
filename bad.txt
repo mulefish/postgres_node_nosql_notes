@@ -1,0 +1,8 @@
+postgres=# INSERT INTO products(data) VALUES('{
+    "id": 1,
+    "name": "shoes",
+    "description": "blue_shoes",
+    "price": 12.34,
+    "currency": "dollars",
+    "in_stock": 5,
+}');

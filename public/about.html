@@ -9,6 +9,10 @@
         }
 
         tr:nth-child(even) {background-color: #f2f2f2;}  
+        .jsonb {
+            background-color:#6663f6;
+        }
+
         </style>
 
 
@@ -17,6 +21,86 @@
 
 
 <table border='1'>
+        <tr class='jsonb'>
+                <td>
+            
+            
+            <textarea rows=8 cols=70>
+CREATE TABLE orders (
+ID serial NOT NULL PRIMARY KEY,
+info json NOT NULL
+);
+</textarea>            
+</td><td>Mixing JSON and postgres: http://www.postgresqltutorial.com/postgresql-json/ </td></tr>
+
+
+
+
+
+
+
+
+   <tr class='jsonb'>
+        <td>
+    
+    
+    <textarea rows=8 cols=70>
+INSERT INTO orders (info)
+VALUES
+(
+'{ "customer": "Lily Bush", "items": {"product": "Diaper","qty": 24}}'
+),
+(
+'{ "customer": "Josh William", "items": {"product": "Toy Car","qty": 1}}'
+),
+(
+'{ "customer": "Mary Clark", "items": {"product": "Toy Train","qty": 2}}'
+);            
+</textarea>            
+</td><td>Adding into the orders table </td></tr>
+
+
+
+
+<tr class='jsonb'>
+        <td>
+    
+    
+    <textarea rows=8 cols=70>
+SELECT
+MIN (
+CAST (
+info -> 'items' ->> 'qty' AS INTEGER
+)
+),
+MAX (
+CAST (
+info -> 'items' ->> 'qty' AS INTEGER
+)
+),
+SUM (
+CAST (
+info -> 'items' ->> 'qty' AS INTEGER
+)
+),
+AVG (
+CAST (
+info -> 'items' ->> 'qty' AS INTEGER
+)
+)          
+FROM
+orders</textarea>            
+</td><td>Doing sums<br>
+First  info -> 'items' returns items as JSON objects. And then info->'items'->>'product' returns all products as text.
+
+</td></tr>
+
+
+
+
+
+<!-- // ///////////////////////////////// // -->
+
 <tr><td>psql -d postgres -U me </td><td>Get to postgres CLI</td></tr>
 <tr><td>CREATE ROLE me WITH LOGIN PASSWORD 'password';</td><td>Create user named 'me' with password 'password'</td></tr>
 <tr><td>ALTER ROLE me CREATEDB;</td><td>Make 'me' able to able to create a database</td></tr>
